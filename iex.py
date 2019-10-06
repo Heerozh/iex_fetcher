@@ -33,7 +33,7 @@ class Stock:
 
 
     def chart(self, range):
-        # https://sandbox.iexapis.com/stable/stock/AAPL/chart/1m?token=Tpk_8dad7c6b1806466dbb3c1b3c07fa5be1
+        # https://sandbox.iexapis.com/stable/stock/AAPL/chart/1m?token=Tpk_xxx
         json_text = self._get('stock/{}/chart/{}'.format(self._symbol, range), parse=False)
         df = pd.read_json(json_text, orient='records', convert_dates=True)
         df = df.set_index('date')
