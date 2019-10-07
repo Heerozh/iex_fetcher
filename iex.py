@@ -1,5 +1,6 @@
 import requests
 import pandas as pd
+from urllib.parse import urlencode
 
 IEX_TOKEN = ''
 IEX_VERSION = ''
@@ -9,29 +10,31 @@ class Stock:
     _symbol = ''
 
     @classmethod
-    def _make_url(cls, query):
-        query += '&' if '?' in query else '?'
-        return 'https://{}.iexapis.com/{}/{}token={}'.format(IEX_API, IEX_VERSION, query, IEX_TOKEN)
+    def _make_url(cls, paths, params):
+        query = '/'.join(paths)
+        params['token'] = IEX_TOKEN
+        query += '?' + urlencode(params)
+        return 'https://{}.iexapis.com/{}/{}'.format(IEX_API, IEX_VERSION, query)
 
     @classmethod
-    def _get(cls, query, parse=True):
-        # print(cls._make_url(query))
-        resp = requests.get(cls._make_url(query))
+    def _get(cls, paths, params, parse=True):
+        url = cls._make_url(paths, params)
+        resp = requests.get(url)
         if resp.status_code != 200:
-            raise Exception('GET {} {} {}'.format(query, resp.status_code, resp.text))
+            raise Exception('GET {} {} {}'.format(url, resp.status_code, resp.text))
         return resp.json() if parse else resp.text
 
     def __init__(self, symbol=None, isin=None):
         # todo
         self._symbol = symbol if symbol else self.mapping(isin)
 
-    def chart(self, range):
+    def chart(self, range, **params):
         # https://sandbox.iexapis.com/stable/stock/AAPL/chart/1m?token=Tpk_xxx
-        query = 'stock/{}/chart/{}'.format(self._symbol, range)
-        json_text = self._get(query, parse=False)
+        paths = ['stock', self._symbol, 'chart', range]
+        json_text = self._get(paths, params, parse=False)
         df = pd.read_json(json_text, orient='records', convert_dates=True)
         if len(df) == 0:
-            raise Exception('Empty data: {} {}'.format(self._make_url(query), json_text))
+            raise Exception('Empty data: {} {}'.format(self._make_url(paths, params), json_text))
         df = df.set_index('date')
         return df
 

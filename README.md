@@ -68,85 +68,173 @@ aapl.chart('5d')
       <td>0.00</td>
       <td>0.000000</td>
       <td>0.0000</td>
-      <td>230.20</td>
-      <td>230.09</td>
+      <td>231.48</td>
+      <td>234.64</td>
       <td>Sep 30</td>
-      <td>229.47</td>
-      <td>226.80</td>
-      <td>228.40</td>
-      <td>227.92</td>
-      <td>228.85</td>
-      <td>229.90</td>
-      <td>26841490</td>
-      <td>27506584</td>
+      <td>221.81</td>
+      <td>230.30</td>
+      <td>229.26</td>
+      <td>228.03</td>
+      <td>230.10</td>
+      <td>225.40</td>
+      <td>26836800</td>
+      <td>26634345</td>
     </tr>
     <tr>
       <th>2019-10-01</th>
-      <td>0.62</td>
-      <td>0.002852</td>
-      <td>0.2858</td>
-      <td>234.56</td>
-      <td>228.73</td>
+      <td>0.63</td>
+      <td>0.002813</td>
+      <td>0.2860</td>
+      <td>230.43</td>
+      <td>232.22</td>
       <td>Oct 1</td>
-      <td>234.70</td>
-      <td>226.03</td>
-      <td>226.30</td>
-      <td>237.90</td>
-      <td>230.50</td>
-      <td>235.12</td>
-      <td>37691578</td>
-      <td>37906031</td>
+      <td>228.40</td>
+      <td>231.13</td>
+      <td>233.81</td>
+      <td>229.73</td>
+      <td>226.10</td>
+      <td>225.33</td>
+      <td>37549879</td>
+      <td>36964121</td>
     </tr>
     <tr>
       <th>2019-10-02</th>
-      <td>-5.68</td>
-      <td>-0.022798</td>
-      <td>-2.6024</td>
-      <td>219.46</td>
-      <td>229.68</td>
+      <td>-5.78</td>
+      <td>-0.022770</td>
+      <td>-2.5135</td>
+      <td>228.61</td>
+      <td>229.02</td>
       <td>Oct 2</td>
-      <td>227.08</td>
-      <td>223.94</td>
-      <td>219.07</td>
-      <td>234.70</td>
-      <td>223.84</td>
-      <td>234.00</td>
-      <td>36483928</td>
-      <td>36859828</td>
+      <td>225.29</td>
+      <td>232.71</td>
+      <td>224.71</td>
+      <td>233.20</td>
+      <td>228.66</td>
+      <td>232.18</td>
+      <td>36373450</td>
+      <td>36082815</td>
     </tr>
     <tr>
       <th>2019-10-03</th>
-      <td>1.87</td>
-      <td>-0.014374</td>
-      <td>0.8615</td>
-      <td>221.36</td>
-      <td>228.88</td>
+      <td>1.88</td>
+      <td>-0.014334</td>
+      <td>0.8665</td>
+      <td>231.38</td>
+      <td>225.03</td>
       <td>Oct 3</td>
-      <td>224.74</td>
-      <td>226.18</td>
-      <td>230.40</td>
-      <td>230.14</td>
-      <td>217.64</td>
-      <td>228.59</td>
-      <td>31658842</td>
-      <td>30946087</td>
+      <td>219.88</td>
+      <td>219.20</td>
+      <td>224.89</td>
+      <td>229.04</td>
+      <td>215.48</td>
+      <td>222.41</td>
+      <td>31733834</td>
+      <td>30957763</td>
     </tr>
     <tr>
       <th>2019-10-04</th>
-      <td>6.26</td>
-      <td>0.013779</td>
-      <td>2.8933</td>
-      <td>236.36</td>
-      <td>234.80</td>
+      <td>6.21</td>
+      <td>0.014214</td>
+      <td>2.9104</td>
+      <td>236.71</td>
+      <td>230.05</td>
       <td>Oct 4</td>
-      <td>225.47</td>
-      <td>233.62</td>
-      <td>229.12</td>
-      <td>230.83</td>
-      <td>227.00</td>
-      <td>229.15</td>
-      <td>35594415</td>
-      <td>35560415</td>
+      <td>231.56</td>
+      <td>228.99</td>
+      <td>234.99</td>
+      <td>230.43</td>
+      <td>227.37</td>
+      <td>229.44</td>
+      <td>35793765</td>
+      <td>36380802</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+aapl.chart('5d', chartCloseOnly=True)
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>change</th>
+      <th>changeOverTime</th>
+      <th>changePercent</th>
+      <th>close</th>
+      <th>volume</th>
+    </tr>
+    <tr>
+      <th>date</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>2019-09-30</th>
+      <td>0.00</td>
+      <td>0.000000</td>
+      <td>0.0000</td>
+      <td>232.70</td>
+      <td>27406280</td>
+    </tr>
+    <tr>
+      <th>2019-10-01</th>
+      <td>0.64</td>
+      <td>0.002789</td>
+      <td>0.2904</td>
+      <td>234.61</td>
+      <td>37247422</td>
+    </tr>
+    <tr>
+      <th>2019-10-02</th>
+      <td>-5.82</td>
+      <td>-0.023449</td>
+      <td>-2.6087</td>
+      <td>223.08</td>
+      <td>36111255</td>
+    </tr>
+    <tr>
+      <th>2019-10-03</th>
+      <td>1.90</td>
+      <td>-0.014263</td>
+      <td>0.8565</td>
+      <td>231.56</td>
+      <td>31266500</td>
+    </tr>
+    <tr>
+      <th>2019-10-04</th>
+      <td>6.28</td>
+      <td>0.013826</td>
+      <td>2.8464</td>
+      <td>228.54</td>
+      <td>36016338</td>
     </tr>
   </tbody>
 </table>
