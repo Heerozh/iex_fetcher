@@ -10,8 +10,7 @@ class Stock:
 
     @classmethod
     def _make_url(cls, query):
-        if not query.endswith('?'):
-            query = query + '?'
+        query += '&' if '?' in query else '?'
         return 'https://{}.iexapis.com/{}/{}token={}'.format(IEX_API, IEX_VERSION, query, IEX_TOKEN)
 
     @classmethod
@@ -23,16 +22,16 @@ class Stock:
         return resp.json() if parse else resp.text
 
     def __init__(self, symbol=None, isin=None):
-        if symbol:
-            self._symbol = symbol
-        else:
-            # todo
-            self._symbol = self.mapping(isin)
+        # todo
+        self._symbol = symbol if symbol else self.mapping(isin)
 
     def chart(self, range):
         # https://sandbox.iexapis.com/stable/stock/AAPL/chart/1m?token=Tpk_xxx
-        json_text = self._get('stock/{}/chart/{}'.format(self._symbol, range), parse=False)
+        query = 'stock/{}/chart/{}'.format(self._symbol, range)
+        json_text = self._get(query, parse=False)
         df = pd.read_json(json_text, orient='records', convert_dates=True)
+        if len(df) == 0:
+            raise Exception('Empty data: {} {}'.format(self._make_url(query), json_text))
         df = df.set_index('date')
         return df
 
