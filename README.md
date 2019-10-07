@@ -3,7 +3,7 @@
 %autoreload 2
 ```
 
-# IEX Stock Fetcher
+# Simple IEX Stock Fetcher
 
 The IEX free message quota only gets one year of data for 200 stocks, so run this, fetcher stock data and save to disk every month.
 

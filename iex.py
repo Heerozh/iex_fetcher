@@ -20,17 +20,14 @@ class Stock:
         resp = requests.get(cls._make_url(query))
         if resp.status_code != 200:
             raise Exception('GET {} {} {}'.format(query, resp.status_code, resp.text))
-        if parse:
-            return resp.json()
-        else:
-            return resp.text
+        return resp.json() if parse else resp.text
 
     def __init__(self, symbol=None, isin=None):
         if symbol:
             self._symbol = symbol
         else:
+            # todo
             self._symbol = self.mapping(isin)
-
 
     def chart(self, range):
         # https://sandbox.iexapis.com/stable/stock/AAPL/chart/1m?token=Tpk_xxx
