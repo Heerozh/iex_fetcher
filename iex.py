@@ -17,7 +17,7 @@ class Stock:
         return 'https://{}.iexapis.com/{}/{}'.format(IEX_API, IEX_VERSION, query)
 
     @classmethod
-    def _get(cls, paths, params, parse=True):
+    def _get(cls, paths, params, parse=False):
         url = cls._make_url(paths, params)
         resp = requests.get(url)
         if resp.status_code != 200:
@@ -28,15 +28,30 @@ class Stock:
         # todo
         self._symbol = symbol if symbol else self.mapping(isin)
 
-    def chart(self, range, **params):
-        # https://sandbox.iexapis.com/stable/stock/AAPL/chart/1m?token=Tpk_xxx
-        paths = ['stock', self._symbol, 'chart', range]
-        json_text = self._get(paths, params, parse=False)
+    def _records(self, paths, params, date_col):
+        json_text = self._get(paths, params)
         df = pd.read_json(json_text, orient='records', convert_dates=True)
         if len(df) == 0:
             raise Exception('Empty data: {} {}'.format(self._make_url(paths, params), json_text))
-        df = df.set_index('date')
+        df = df.set_index(date_col)
         return df
+
+    def chart(self, range, **params):
+        # https://sandbox.iexapis.com/stable/stock/AAPL/chart/1m?token=Tpk_xxx
+        paths = ['stock', self._symbol, 'chart', range]
+        return self._records(paths, params, 'date')
+
+    def splits(self, range, **params):
+        paths = ['stock', self._symbol, 'splits', range]
+        return self._records(paths, params, 'exDate')
+
+    def dividends(self, range, **params):
+        paths = ['stock', self._symbol, 'dividends', range]
+        return self._records(paths, params, 'exDate')
+
+    def news(self, last, **params):
+        paths = ['stock', self._symbol, 'news/last', str(last)]
+        return self._records(paths, params, 'datetime')
 
 def init(token, version='stable', api='sandbox'):
     global IEX_TOKEN, IEX_VERSION, IEX_API
