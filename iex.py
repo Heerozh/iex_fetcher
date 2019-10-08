@@ -36,6 +36,13 @@ class Stock:
         df = df.set_index(date_col)
         return df
 
+    def _json(self, paths, params):
+        return self._get(paths, params, parse=True)
+
+    def company(self, **params):
+        paths = ['stock', self._symbol, 'company']
+        return self._json(paths, params)
+
     def chart(self, range, **params):
         # https://sandbox.iexapis.com/stable/stock/AAPL/chart/1m?token=Tpk_xxx
         paths = ['stock', self._symbol, 'chart', range]
