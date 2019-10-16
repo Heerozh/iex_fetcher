@@ -24,20 +24,25 @@ class Stock:
             raise Exception('GET {} {} {}'.format(url, resp.status_code, resp.text))
         return resp.json() if parse else resp.text
 
-    def __init__(self, symbol=None, isin=None):
-        # todo
-        self._symbol = symbol if symbol else self.mapping(isin)
-
-    def _records(self, paths, params, date_col):
-        json_text = self._get(paths, params)
+    @classmethod
+    def _records(cls, paths, params, date_col):
+        """ Convert json to record orient df, and index as date_col """
+        json_text = cls._get(paths, params)
         df = pd.read_json(json_text, orient='records', convert_dates=True)
         if len(df) == 0:
-            raise Exception('Empty data: {} {}'.format(self._make_url(paths, params), json_text))
+            raise Exception('Empty data: {} {}'.format(cls._make_url(paths, params), json_text))
         df = df.set_index(date_col)
         return df
 
-    def _json(self, paths, params):
-        return self._get(paths, params, parse=True)
+    @classmethod
+    def _json(cls, paths, params):
+        return cls._get(paths, params, parse=True)
+
+    ###### APIs ######
+
+    def __init__(self, symbol=None, isin=None):
+        # todo
+        self._symbol = symbol if symbol else self.mapping(isin)
 
     def company(self, **params):
         paths = ['stock', self._symbol, 'company']
@@ -59,6 +64,8 @@ class Stock:
     def news(self, last, **params):
         paths = ['stock', self._symbol, 'news/last', str(last)]
         return self._records(paths, params, 'datetime')
+
+#----------------------------------------------------------------
 
 def init(token, version='stable', api='sandbox'):
     global IEX_TOKEN, IEX_VERSION, IEX_API
