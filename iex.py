@@ -6,9 +6,8 @@ IEX_TOKEN = ''
 IEX_VERSION = ''
 IEX_API = ''
 
-class Stock:
-    _symbol = ''
 
+class IEX_API:
     @classmethod
     def _make_url(cls, paths, params):
         query = '/'.join(paths)
@@ -28,17 +27,30 @@ class Stock:
     def _records(cls, paths, params, date_col):
         """ Convert json to record orient df, and index as date_col """
         json_text = cls._get(paths, params)
-        df = pd.read_json(json_text, orient='records', convert_dates=True)
+        df = pd.read_json(json_text, orient='records')
         if len(df) == 0:
-            raise Exception('Empty data: {} {}'.format(cls._make_url(paths, params), json_text))
+            raise EOFError('Empty data: {} {}'.format(cls._make_url(paths, params), json_text))
         df = df.set_index(date_col)
+        df.index = pd.to_datetime(df.index)
         return df
 
     @classmethod
     def _json(cls, paths, params):
         return cls._get(paths, params, parse=True)
 
-    ###### APIs ######
+#----------------------------------------------------------------
+
+class Reference(IEX_API):
+
+    @classmethod
+    def symbols(cls, **params):
+        paths = ['ref-data', 'symbols']
+        return cls._records(paths, params, 'date')
+
+#----------------------------------------------------------------
+
+class Stock(IEX_API):
+    _symbol = ''
 
     def __init__(self, symbol=None, isin=None):
         # todo
