@@ -6,8 +6,10 @@ IEX_TOKEN = ''
 IEX_VERSION = ''
 IEX_API = ''
 
+s = requests.Session()
 
-class IEX_API:
+
+class IEXBase:
     @classmethod
     def _make_url(cls, paths, params):
         query = '/'.join(paths)
@@ -18,7 +20,7 @@ class IEX_API:
     @classmethod
     def _get(cls, paths, params, parse=False):
         url = cls._make_url(paths, params)
-        resp = requests.get(url)
+        resp = s.get(url)
         if resp.status_code != 200:
             raise Exception('GET {} {} {}'.format(url, resp.status_code, resp.text))
         return resp.json() if parse else resp.text
@@ -38,18 +40,22 @@ class IEX_API:
     def _json(cls, paths, params):
         return cls._get(paths, params, parse=True)
 
-#----------------------------------------------------------------
 
-class Reference(IEX_API):
+# ----------------------------------------------------------------
+
+
+class Reference(IEXBase):
 
     @classmethod
     def symbols(cls, **params):
         paths = ['ref-data', 'symbols']
         return cls._records(paths, params, 'date')
 
-#----------------------------------------------------------------
 
-class Stock(IEX_API):
+# ----------------------------------------------------------------
+
+
+class Stock(IEXBase):
     _symbol = ''
 
     def __init__(self, symbol=None, isin=None):
@@ -77,7 +83,9 @@ class Stock(IEX_API):
         paths = ['stock', self._symbol, 'news/last', str(last)]
         return self._records(paths, params, 'datetime')
 
-#----------------------------------------------------------------
+
+# ----------------------------------------------------------------
+
 
 def init(token, version='stable', api='sandbox'):
     global IEX_TOKEN, IEX_VERSION, IEX_API
@@ -85,7 +93,7 @@ def init(token, version='stable', api='sandbox'):
     IEX_VERSION = version
     IEX_API = api
 
+
 def stock(symbol=None, isin=None):
     assert IEX_TOKEN != '', 'Call iex.init(token, api="cloud") first'
     return Stock(symbol, isin)
-
