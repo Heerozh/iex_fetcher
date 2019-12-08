@@ -1,14 +1,10 @@
 
 
-```python
-%load_ext autoreload
-%autoreload 2
-```
-
 # Simple IEX Stock Fetcher
 
-The IEX free message quota only gets one year of data for 200 stocks, so run this, fetcher stock data and save to disk every month.
+A python lib to get stock prices/dividends/splits from IEX Cloud.
 
+My IEX Referrals: [https://iexcloud.io/s/62efba08](https://iexcloud.io/s/62efba08)
 
 ## Test api
 
@@ -146,56 +142,25 @@ aapl.dividends('1y')
 
 
 
-## Fetcher SPY stocks
+## Fetcher stocks
 
 
 ```python
-import pandas as pd
-spy = [x for x in pd.read_html('https://etfdailynews.com/etf/spy/', attrs={'id': 'etfs-that-own'})[0].Symbol.values.tolist()
-       if isinstance(x, str)]
-correction = {'PCLN':'BKNG', 'DWDP':'DD'}
+symbols = iex.Reference.symbols()
+symbols = symbols[(symbols.type == 'ad') | (symbols.type == 'cs') & (symbols.exchange != 'OTC')]
+symbols = symbols.symbol.values
 ```
 
 
 ```python
-import os, sys
-chart_range = [(5,'5d'), (20,'1m'), (75,'3m'), (165,'6m'), (341,'1y'), (715,'2y'), (99999,'max')]
-```
-
-
-```python
-# iex.init(key.test_token, api='sandbox')
-iex.init(key.token, api='cloud')
-
-# save historical price to disk
-for k in spy:
-    k = correction[k] if k in correction else k
+from tqdm.notebook import tqdm
+for k in tqdm(symbols):
     sys.stdout.write('\r{}   '.format(k))
     filename = "./daily/{}.csv".format(k)
-    if os.path.exists(filename):
-        # fetcher missing period
-        df = pd.read_csv(filename, index_col='date', parse_dates=True)
-        days = pd.Timedelta(df.index[-1] - pd.datetime.now()).days
-        bdays = len(pandas.bdate_range(df.index[-1], pd.datetime.now())) - 1
-        for day, param in chart_range:
-            if bdays <= 0:
-                break
-            elif days < day:
-                df_append = iex.Stock(k).chart(param)
-                pd.concat([df, df_append]).to_csv(filename)
-                break
-    else:
-        iex.Stock(k).chart('max').to_csv(filename)
-
-
+    iex.Stock(k).chart('5y').to_csv(filename)
+print('ok')
 ```
 
-
-```python
-
-```
+Code above will consume about 60 million messages
 
 
-```python
-
-```
