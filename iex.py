@@ -1,4 +1,5 @@
 import requests
+import time
 import pandas as pd
 from urllib.parse import urlencode
 
@@ -20,7 +21,19 @@ class IEXBase:
     @classmethod
     def _get(cls, paths, params, parse=False):
         url = cls._make_url(paths, params)
-        resp = s.get(url)
+
+        reconnect_time = 0.5
+        while True:
+            try:
+                resp = s.get(url)
+                break
+            except ConnectionError as e:
+                print(e, 'reconnect after sec:', reconnect_time)
+                time.sleep(reconnect_time)
+                reconnect_time *= 2
+                if reconnect_time > 128:
+                    raise e
+
         if resp.status_code != 200:
             raise Exception('GET {} {} {}'.format(url, resp.status_code, resp.text))
         return resp.json() if parse else resp.text
@@ -32,8 +45,9 @@ class IEXBase:
         df = pd.read_json(json_text, orient='records')
         if len(df) == 0:
             raise EOFError('Empty data: {} {}'.format(cls._make_url(paths, params), json_text))
-        df = df.set_index(date_col)
-        df.index = pd.to_datetime(df.index)
+        if date_col is not None:
+            df = df.set_index(date_col)
+            df.index = pd.to_datetime(df.index)
         return df
 
     @classmethod
@@ -51,12 +65,29 @@ class Reference(IEXBase):
         paths = ['ref-data', 'symbols']
         return cls._records(paths, params, 'date')
 
+    @classmethod
+    def sectors(cls, **params):
+        paths = ['ref-data', 'sectors']
+        return cls._records(paths, params, None)
+
+    @classmethod
+    def tags(cls, **params):
+        paths = ['ref-data', 'tags']
+        return cls._records(paths, params, None)
 
 # ----------------------------------------------------------------
 
 
 class Stock(IEXBase):
     _symbol = ''
+
+
+    class Market(IEXBase):
+        @classmethod
+        def collection(cls, collectionType, **params):
+            paths = ['stock/market/collection', collectionType]
+            return cls._records(paths, params, None)
+
 
     def __init__(self, symbol=None, isin=None):
         # todo
