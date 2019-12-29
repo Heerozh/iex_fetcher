@@ -42,7 +42,7 @@ class IEXBase:
     def _records(cls, paths, params, date_col):
         """ Convert json to record orient df, and index as date_col """
         json_text = cls._get(paths, params)
-        df = pd.read_json(json_text, orient='records')
+        df = pd.read_json(json_text, orient='records', convert_dates=False)
         if len(df) == 0:
             raise EOFError('Empty data: {} {}'.format(cls._make_url(paths, params), json_text))
         if date_col is not None:
