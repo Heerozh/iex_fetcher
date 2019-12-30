@@ -81,33 +81,34 @@ class Reference(IEXBase):
 class Stock(IEXBase):
     _symbol = ''
 
-
     class Market(IEXBase):
         @classmethod
-        def collection(cls, collectionType, **params):
-            paths = ['stock/market/collection', collectionType]
+        def collection(cls, collection_type, **params):
+            paths = ['stock/market/collection', collection_type]
             return cls._records(paths, params, None)
 
-
     def __init__(self, symbol=None, isin=None):
-        # todo
         self._symbol = symbol if symbol else self.mapping(isin)
+
+    def mapping(self, isin):
+        # todo
+        raise NotImplementedError('')
 
     def company(self, **params):
         paths = ['stock', self._symbol, 'company']
         return self._json(paths, params)
 
-    def chart(self, range, **params):
+    def chart(self, range_, **params):
         # https://sandbox.iexapis.com/stable/stock/AAPL/chart/1m?token=Tpk_xxx
-        paths = ['stock', self._symbol, 'chart', range]
+        paths = ['stock', self._symbol, 'chart', range_]
         return self._records(paths, params, 'date')
 
-    def splits(self, range, **params):
-        paths = ['stock', self._symbol, 'splits', range]
+    def splits(self, range_, **params):
+        paths = ['stock', self._symbol, 'splits', range_]
         return self._records(paths, params, 'exDate')
 
-    def dividends(self, range, **params):
-        paths = ['stock', self._symbol, 'dividends', range]
+    def dividends(self, range_, **params):
+        paths = ['stock', self._symbol, 'dividends', range_]
         return self._records(paths, params, 'exDate')
 
     def news(self, last, **params):
