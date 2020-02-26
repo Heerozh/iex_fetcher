@@ -8,6 +8,8 @@ IEX_VERSION = ''
 IEX_API = ''
 
 s = requests.Session()
+s.mount('http://', requests.adapters.HTTPAdapter(max_retries=5))
+s.mount('https://', requests.adapters.HTTPAdapter(max_retries=5))
 
 
 class IEXBase:
@@ -21,19 +23,7 @@ class IEXBase:
     @classmethod
     def _get(cls, paths, params, parse=False):
         url = cls._make_url(paths, params)
-
-        reconnect_time = 0.5
-        while True:
-            try:
-                resp = s.get(url)
-                break
-            except ConnectionError as e:
-                print(e, 'reconnect after sec:', reconnect_time)
-                time.sleep(reconnect_time)
-                reconnect_time *= 2
-                if reconnect_time > 128:
-                    raise e
-
+        resp = s.get(url, )
         if resp.status_code != 200:
             raise Exception('GET {} {} {}'.format(url, resp.status_code, resp.text))
         return resp.json() if parse else resp.text
